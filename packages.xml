@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  <package>
+    <name>testui</name> <!-- name of the package, must match the directory -->
+    <version>1</version> <!-- version used to determine updates -->
+    <type>addon</type> <!-- valid package types: addon, library, service -->
+    <dependencies> <!-- dependent packages -->
+    </dependencies>
+    <files> <!-- list of included files, file size optional -->
+      <file>testui/manifest.xml</file>
+      <file>tesui/testui.lua</file>
+    </files>
+  </package>
+  <!-- add more packages here -->
+</packages>
