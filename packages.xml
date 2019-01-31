@@ -8,7 +8,7 @@
     </dependencies>
     <files> <!-- list of included files, file size optional -->
       <file>testui/manifest.xml</file>
-      <file>tesui/testui.lua</file>
+      <file>testui/testui.lua</file>
     </files>
   </package>
   <!-- add more packages here -->
