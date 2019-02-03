@@ -11,5 +11,19 @@
       <file>testui/testui.lua</file>
     </files>
   </package>
+  <package>
+    <name>clock</name>
+    <version>0.1</version>
+    <type>addon</type>
+    <dependencies>
+      <dependency>lists</dependency>
+      <dependency>settings</dependency>
+    </dependencies>
+    <files>
+      <file>clock/manifest.xml</file>
+      <file>clock/clock.lua</file>
+      <file>clock/time_zones.lua</file>
+    </files>
+  </package>
   <!-- add more packages here -->
 </packages>
