@@ -1,9 +1,9 @@
 # addons-v5
 Personal and in-development addons for Windower 5.
 
-## Add this repository
+### Add this repository
 
-To add this repository to your Windower 5 installation, use the `pkg addsrc` command.
+To add this repository to your Windower 5 installation, use the `pkg addsrc` command.<br/>
 You can then install packages as usual.
 
 ```
