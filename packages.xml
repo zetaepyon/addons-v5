@@ -38,6 +38,7 @@
     <files>
       <file>nameplates/manifest.xml</file>
       <file>nameplates/nameplates.lua</file>
+    </files>
   </package>
   <!-- add more packages here -->
 </packages>
