@@ -25,5 +25,19 @@
       <file>clock/time_zones.lua</file>
     </files>
   </package>
+  <package>
+    <name>nameplates</name>
+    <version>0.1</version>
+    <type>addon</type>
+    <dependencies>
+      <dependency>entities</dependency>
+      <dependency>memory</dependency>
+      <dependency>player</dependency>
+      <dependency>target</dependency>
+    </dependencies>
+    <files>
+      <file>nameplates/manifest.xml</file>
+      <file>nameplates/nameplates.lua</file>
+  </package>
   <!-- add more packages here -->
 </packages>

@@ -1,0 +1,25 @@
+<package>
+  <name>nameplates</name>
+  <version>0.1</version>
+  <type>addon</type>
+  <dependencies>
+    <!-- <dependency>account</dependency> -->
+    <!-- <dependency>bla_service</dependency> -->
+    <!-- <dependency>blalib</dependency> -->
+    <dependency>entities</dependency>
+    <dependency>memory</dependency>
+    <!-- <dependency>packets</dependency> -->
+    <!-- <dependency>party</dependency> -->
+    <dependency>player</dependency>
+    <!-- <dependency>reflect</dependency> -->
+    <!-- <dependency>resources</dependency> -->
+    <!-- <dependency>sets</dependency> -->
+    <!-- <dependency>settings</dependency> -->
+    <!-- <dependency>shared</dependency> -->
+    <!-- <dependency>socket</dependency> -->
+    <!-- <dependency>structs</dependency> -->
+    <dependency>target</dependency>
+    <!-- <dependency>util</dependency> -->
+    <!-- <dependency>world</dependency> -->
+  </dependencies>
+</package>
