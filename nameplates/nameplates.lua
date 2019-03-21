@@ -168,7 +168,7 @@ local nameplate = function(entity, x_off, y_off)
 end
 
 ui.display(function()
-    local mat = mm(memory.camera.view_matrix, memory.camera.projection_matrix)
+    local mat = mm(memory.graphics.view_matrix, memory.graphics.projection_matrix)
 
     for index = 0, 0x900 - 1 do
         local entity = entities[index]
