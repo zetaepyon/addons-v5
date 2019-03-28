@@ -16,7 +16,8 @@ local speedometer = {
 ui.display(function()
     speedometer = ui.window('speedometer',speedometer,function() 
         local speed = entities[player.index].movement_speed
-        ui.text(string.format('%+.0f %%',100*(speed / 5 - 1)))
+        local base = entities[player.index].movement_speed_base
+        ui.text(string.format('%+.0f %%',100*(speed / base - 1)))
     end)
 end)
 
