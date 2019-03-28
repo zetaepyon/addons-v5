@@ -49,8 +49,8 @@
       <dependency>player</dependency>
     </dependencies>
     <files>
-      <file>nameplates/manifest.xml</file>
-      <file>nameplates/speedometer.lua</file>
+      <file>speedometer/manifest.xml</file>
+      <file>speedometer/speedometer.lua</file>
     </files>
   </package>
   <!-- add more packages here -->
