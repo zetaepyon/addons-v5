@@ -40,5 +40,18 @@
       <file>nameplates/nameplates.lua</file>
     </files>
   </package>
+  <package>
+    <name>speedometer</name>
+    <version>1.0.0.0</version>
+    <type>addon</type>
+    <dependencies>
+      <dependency>entities</dependency>
+      <dependency>player</dependency>
+    </dependencies>
+    <files>
+      <file>nameplates/manifest.xml</file>
+      <file>nameplates/speedometer.lua</file>
+    </files>
+  </package>
   <!-- add more packages here -->
 </packages>
