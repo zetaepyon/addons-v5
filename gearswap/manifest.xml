@@ -1,0 +1,14 @@
+<package>
+  <name>gearswap</name>
+  <version>0.1</version> <!-- 2nd 3rd and 4th numbers are optional, can also have an optional tag string suffix -->
+  <type>addon</type> <!-- can also be "library" or "service" -->
+  <dependencies>
+    <dependency>entities</dependency>
+    <dependency>action</dependency>
+    <dependency>player</dependency>
+    <dependency>items</dependency>
+    <dependency>equipment</dependency>
+    <dependency>packets</dependency>
+    <dependency>resources</dependency>
+  </dependencies>
+</package>

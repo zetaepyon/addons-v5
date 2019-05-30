@@ -26,6 +26,27 @@
     </files>
   </package>
   <package>
+    <name>gearswap</name>
+    <version>0.1</version>
+    <type>addon</type>
+    <dependencies>
+      <dependency>action</dependency>
+      <dependency>resources</dependency>
+      <dependency>entities</dependency>
+      <dependency>player</dependency>
+      <dependency>items</dependency>
+      <dependency>packets</dependency>
+    </dependencies>
+    <files>
+      <file>gearswap/actionui.lua</file>
+      <file>gearswap/data/userscript_template.lua</file>
+      <file>gearswap/gearswap.lua</file>
+      <file>gearswap/manifest.xml</file>
+      <file>gearswap/statics.lua</file>
+      <file>gearswap/utility.lua</file>
+    </files>
+  </package>
+  <package>
     <name>nameplates</name>
     <version>0.1.1</version>
     <type>addon</type>
