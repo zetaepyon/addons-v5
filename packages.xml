@@ -27,7 +27,7 @@
   </package>
   <package>
     <name>gearswap</name>
-    <version>0.1</version>
+    <version>0.1.0.1</version>
     <type>addon</type>
     <dependencies>
       <dependency>action</dependency>
@@ -38,7 +38,6 @@
       <dependency>packets</dependency>
     </dependencies>
     <files>
-      <file>gearswap/actionui.lua</file>
       <file>gearswap/data/userscript_template.lua</file>
       <file>gearswap/gearswap.lua</file>
       <file>gearswap/manifest.xml</file>

@@ -28,24 +28,24 @@ sets.idle = {
     "Defending Ring",
 }
 
-filter_action = function(act)
-    debug_msg('User Filter Action',act.name)
+filter_action = function(action)
+    debug.message('User Filter Action',action.name)
 end
 
-pre_action = function(act)
-    debug_msg('User Pre-Action',act.name)
-    if act.name == 'Shiva' then
+pre_action = function(action)
+    debug.message('User Pre-Action',action.name)
+    if action.name == 'Shiva' then
         equip(sets.pre_action.Shiva)
-    elseif act.name == 'Ifrit' then
+    elseif action.name == 'Ifrit' then
         equip(sets.pre_action.Ifrit)
     end
 end
 
-mid_action = function(act)
-    debug_msg('User Mid-Action',act.name)
+mid_action = function(action)
+    debug.message('User Mid-Action',action.name)
 end
 
-post_action = function(act)
-    debug_msg('User Post-Action',act.name)
+post_action = function(action)
+    debug.message('User Post-Action',action.name)
     equip(sets.idle)
 end

@@ -1,26 +1,42 @@
 local chat = require('chat')
 local string = require('string')
+local windower = require('windower')
 
-return {
-    debug_msg = function(title, data)
+local debug
+debug = {
+
+    message = function(title, data)
         data = data or ''
-        chat.add_text('GS>> '..title..': '..data,8)
+        chat.add_text('GS>> ' .. title .. ': ' .. data, 8)
     end,
 
     stringify = function(tbl, indent)
         local stringy = ''
         if not indent then indent = 0 end
         for k,v in pairs(tbl) do
-            local formatting = string.rep("    ", indent)..k..": "
+            local formatting = string.rep("    ", indent) .. k .. ": "
             if type(v) == 'table' then
-                stringy = stringy..formatting..'\n'..stringify(v,indent+1)
+                stringy = stringy .. formatting .. '\n' .. debug.stringify(v, indent + 1)
             else
-                stringy = stringy..formatting..tostring(v)..'\n'
+                stringy = stringy .. formatting .. tostring(v) .. '\n'
             end
         end
         return stringy
-    end
+    end,
+
+    window = {
+        title = 'Last Gearswap Action',
+        x = windower.settings.ui_size.width - 300,
+        y = windower.settings.ui_size.height / 2 - 300,
+        width = 200,
+        height = 600,
+        moveable = true,
+        closed = true,
+    },
+
 }
+
+return debug
 
 --[[
 Copyright © 2019, Windower Dev Team

@@ -1,78 +1,66 @@
 local action = require('action')
-local res = require('resources')
 local chat = require('chat')
-local entities = require('entities')
-local player = require('player')
-local string = require('string')
-local windower = require('windower')
 local command = require('command')
+local entities = require('entities')
 local items = require('items')
-local table = require('table')
 local packets = require('packets')
+local player = require('player')
+local res = require('resources')
+local string = require('string')
+local table = require('table')
+local ui = require('ui')
+local windower = require('windower')
 
 local statics = require('statics')
-local util = require('utility')
-stringify = util.stringify
-debug_msg = util.debug_msg
-
-local debug = {
-    info = false,
-    error = false,
-    swaps = false,
-}
-
-current_action = {}
-require('actionui')
+local debug = require('utility')
+local current_action = {name = 'None'}
 
 -- Enrich and return action target provided by packet
-local function enhance_target(packet)
+local enhance_target = function(packet)
 
     local target_entity = entities[packet.target_index] or nil
-
-    if packet.target_index and target_entity then
-
-        local target_vars = {'name','id','index','distance','hp_percent','status','claim_id','race_id','movement_speed','movement_speed_base','model_size','heading','spawn_type','target_type'}
-        local tgt = {}
-
-        for _,var in pairs(target_vars) do
-            if target_entity[var] then
-                tgt[var] = target_entity[var]
-            end
-        end
-
-        if tgt.id == player.id then
-            tgt.mp_percent = player.mp_percent
-            tgt.tp = player.tp
-        end
-
-        if tgt.target_type then
-            tgt.type = tgt.target_type
-            tgt.target_type = nil
-        end
-
-        if tgt.status then
-            tgt.status_id = tgt.status
-            tgt.status = res.statuses[tgt.status_id].en
-        end
-
-        if tgt.race_id then
-            tgt.race = res.races[tgt.race_id].en
-        end
-
-        if target_entity.position then
-            tgt.x = target_entity.position.x
-            tgt.y = target_entity.position.y
-            tgt.z = target_entity.position.z
-        end
-
-        return tgt
-
+    if not target_entity then
+        return
     end
+
+    local target_vars = {'name', 'id', 'index', 'distance', 'hp_percent', 'status', 'claim_id', 'race_id', 'movement_speed', 'movement_speed_base', 'model_size', 'heading', 'spawn_type', 'target_type'}
+    local target = {}
+    for _,var in pairs(target_vars) do
+        if target_entity[var] then
+            target[var] = target_entity[var]
+        end
+    end
+
+    if target.id == player.id then
+        target.mp_percent = player.mp_percent
+        target.tp = player.tp
+    end
+
+    if target.target_type then
+        target.type = target.target_type
+        target.target_type = nil
+    end
+
+    if target.status then
+        target.status = res.statuses[target.status].en
+    end
+
+    if target.race_id then
+        target.race = res.races[target.race_id].en
+    end
+
+    if target_entity.position then
+        target.x = target_entity.position.x
+        target.y = target_entity.position.y
+        target.z = target_entity.position.z
+    end
+
+    return target
 
 end
 
 -- Parse an action packet and return an enriched table
-local function parse_action(packet)
+local parse_action = function(packet)
 
     local act = {}
     act.category = packet.action_category
@@ -81,11 +69,11 @@ local function parse_action(packet)
     local category_name = statics.category_names[act.category]
     local resource_table
     if act.category == 0x10 then
-        resource_table = {id="0",index="0",prefix="/range",english="Ranged",german="Fernwaffe",french="Attaque à dist.",japanese="飛び道具",type="Misc",element="None",targets={"Enemy"}}
+        resource_table = {id="0", index="0", prefix="/range", english="Ranged", japanese="飛び道具", type="Misc", element="None", targets={"Enemy"}}
     else
         resource_table = res[category_name][packet.param]
     end
-    local action_vars = {'name','prefix','targets','type','skill','mp_cost','tp_cost','element','range','recast','recast_id','cast_time'}
+    local action_vars = {'name', 'prefix', 'targets', 'type', 'skill', 'mp_cost', 'tp_cost', 'element', 'range', 'recast', 'recast_id', 'cast_time'}
 
     for _,v in pairs(action_vars) do
         if resource_table[v] then
@@ -93,7 +81,7 @@ local function parse_action(packet)
         end
     end
 
-    local skillchain_props = {'skillchain_a','skillchain_b','skillchain_c'}
+    local skillchain_props = {'skillchain_a', 'skillchain_b', 'skillchain_c'}
     for k,v in pairs(skillchain_props) do
         if act.category == 7 and resource_table[v] ~= '' then
             if not act.skillchain then
@@ -109,63 +97,8 @@ local function parse_action(packet)
 
 end
 
-----------------------------------------------------------------------------------------------------
--- CREATE USER ENVIRONMENT
-----------------------------------------------------------------------------------------------------
-local equip = function(set)
-    local items = parse_set(set)
-    inject_equipset_packet(items)
-end
-
-local user_env = {
-    require=require,
-    chat=chat,
-    string=string,
-    lua_base_path=windower.package_path,
-    debug_msg=debug_msg,
-    equip=equip,
-}
-
-local load_userscript = function(filename)
-
-    local funct, err = loadfile(windower.package_path .. '\\'.. 'data' .. '\\' .. filename .. '.lua')
-    if funct == nil then
-        debug_msg('User File problem',err)
-        return
-    else
-        debug_msg('Loading user script',filename)
-    end
-
-    setfenv(funct, user_env)
-
-    local status, name = pcall(funct)
-    if not status then
-        debug_msg('Failed to load',name)
-        return nil
-    end
-
-end
-
-local user_pcall = function(str,...)
-    if user_env then
-        if type(user_env[str]) == 'function' then
-            local bool,err = pcall(user_env[str],...)
-            if not bool then
-                debug_msg('Error in user function',str..' - '..err)
-            end
-        elseif user_env[str] then
-            debug_msg('Not a function',str)
-        end
-    end
-end
-
-
-----------------------------------------------------------------------------------------------------
--- SET CONSTRUCTION FUNCTIONS
-----------------------------------------------------------------------------------------------------
-
 -- Return list of inventory matches based on item name
-function match_item(item_name)
+local match_item = function(item_name)
 
     local equippable = statics.equippable_bags
     local normalized = string.lower(item_name)
@@ -185,23 +118,24 @@ function match_item(item_name)
 end
 
 -- Return the valid slots for an item (by id)
-function valid_slots(item_id)
+local valid_slots = function(item_id)
     local slot_map = statics.slot_map
     return slot_map[res.items[item_id].slots]
 end
 
 -- Enhance matches
-function refine_matches(matches)
+local refine_matches = function(matches)
 
     local refined_match = {}
 
     for _,item in ipairs(matches) do
         if item then
+            -- TO DO: enhance with intelligent slot selection logic instead of just picking first
             local valid_slot = valid_slots(item.id)[1]
-            debug_msg('Equipping Item: '..res.items[item.id].enl..' ('..item.id..') in bag '..item.bag_id..' index '..item.bag_index..' to slot '..valid_slot)
+            debug.message('Equipping Item: ' .. res.items[item.id].enl .. ' (' .. item.id .. ') in bag ' .. item.bag_id .. ' index ' .. item.bag_index .. ' to slot ' .. valid_slot)
             refined_match = {bag_index = item.bag_index, slot_id = valid_slot, bag_id = item.bag_id}
         else
-            debug_msg('Item not found')
+            debug.message('Item not found')
         end
     end
 
@@ -210,7 +144,7 @@ function refine_matches(matches)
 end
 
 -- Parse a table of equipment and return items
-function parse_set(item_set)
+local parse_set = function(item_set)
 
     local items = {}
 
@@ -225,78 +159,103 @@ function parse_set(item_set)
 end
 
 -- Inject packet for the assembled equipset
-function inject_equipset_packet(items)
+local inject_equipset_packet = function(items)
+    packets.outgoing[0x051]:inject({
+        count = #items,
+        equipment = items,
+    })
+end
 
-    local equip_packet = {
-        count = 0,
-        equipment = {},
-    }
+local equip = function(set)
+    local items = parse_set(set)
+    inject_equipset_packet(items)
+end
 
-    for _,item in ipairs(items) do
-        equip_packet.equipment[equip_packet.count] = item
-        equip_packet.count = equip_packet.count + 1
+local user_env = {
+    require = require,
+    chat = chat,
+    string = string,
+    lua_base_path = windower.package_path,
+    debug = debug,
+    equip = equip,
+}
+
+local load_userscript = function(filename)
+
+    local funct, err = loadfile(windower.package_path .. '\\' .. 'data' .. '\\' .. filename .. '.lua')
+    if funct == nil then
+        debug.message('User File problem', err)
+        return
+    else
+        debug.message('Loading user script', filename)
     end
 
-    packets.outgoing[0x051]:inject(equip_packet)
+    setfenv(funct, user_env)
+
+    local status, name = pcall(funct)
+    if not status then
+        debug.message('Failed to load', name)
+        return nil
+    end
 
 end
 
-----------------------------------------------------------------------------------------------------
--- ACTION EVENT HANDLERS
-----------------------------------------------------------------------------------------------------
+local user_pcall = function(str,...)
+    if type(user_env[str]) == 'function' then
+        local bool, err = pcall(user_env[str], ...)
+        if not bool then
+            debug.message('Error in user function', str .. ' - ' .. err)
+        end
+    elseif user_env[str] then
+        debug.message('Not a function', str)
+    end
+end
+
+ui.display(function()
+    if not debug.window.closed then
+        debug.window, debug.window.closed = ui.window('gearswap', debug.window, function()
+            ui.text(debug.stringify(current_action))
+        end)
+    end
+end)
+
 action.filter_action:register(function(packet)
     -- action.block()
     local act = parse_action(packet)
     current_action = act
-    user_pcall('filter_action',act)
+    user_pcall('filter_action', act)
 end)
 
 action.pre_action:register(function()
-    user_pcall('pre_action',current_action)
+    user_pcall('pre_action', current_action)
 end)
 
 action.mid_action:register(function()
-    user_pcall('mid_action',current_action)
+    user_pcall('mid_action', current_action)
 end)
 
 action.post_action:register(function()
-    user_pcall('post_action',current_action)
+    user_pcall('post_action', current_action)
 end)
 
-----------------------------------------------------------------------------------------------------
--- ADDON COMMANDS
-----------------------------------------------------------------------------------------------------
 local gs_command = command.new('gs')
 
 gs_command:register('help', function()
     chat.add_text('GearSwap Help')
 end)
 
-gs_command:register('load', function(file_name)
-    load_userscript(file_name)
-end, '<file_name:text>')
-gs_command:register('l', function(file_name)
-    load_userscript(file_name)
-end, '<file_name:text>')
+gs_command:register('load', load_userscript, '<file_name:text>')
+gs_command:register('l', load_userscript, '<file_name:text>')
 
 gs_command:register('actionui', function()
-    window_closed = not window_closed
+    debug.window.closed = not debug.window.closed
 end)
 
-----------------------------------------------------------------------------------------------------
--- TEST COMMANDS
-----------------------------------------------------------------------------------------------------
 gs_command:register('equipitem', function(item_name)
     local matches = match_item(item_name)
     local item = {refine_matches(matches)}
     inject_equipset_packet(item)
 end, '<item_name:text>')
-
-gs_command:register('testset', function()
-    local set = user_env.sets.idle
-    local items = parse_set(set)
-    inject_equipset_packet(items)
-end)
 
 --[[
 Copyright © 2019, Windower Dev Team
