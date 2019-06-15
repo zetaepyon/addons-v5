@@ -1,9 +1,8 @@
 <package>
   <name>clock</name>
-  <version>0.1</version> <!-- 2nd 3rd and 4th numbers are optional, can also have an optional tag string suffix -->
-  <type>addon</type> <!-- can also be "library" or "service" -->
+  <version>0.1.1</version>
+  <type>addon</type>
   <dependencies>
-    <dependency>lists</dependency>
     <dependency>settings</dependency>
   </dependencies>
 </package>
