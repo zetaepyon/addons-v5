@@ -12,6 +12,19 @@
     </files>
   </package>
   <package>
+    <name>equipviewer</name>
+    <version>0.1</version>
+    <type>addon</type>
+    <dependencies>
+      <dependency>settings</dependency>
+      <dependency>equipment</dependency>
+    </dependencies>
+    <files>
+      <file>equipviewer/manifest.xml</file>
+      <file>equipviewer/equipviewer.lua</file>
+    </files>
+  </package>
+  <package>
     <name>clock</name>
     <version>0.1</version>
     <type>addon</type>
